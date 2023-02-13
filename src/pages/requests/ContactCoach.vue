@@ -1,3 +1,1 @@
-<template>
-  <section>Contact</section>
-</template>
+<template>Contact wtih coach</template>
