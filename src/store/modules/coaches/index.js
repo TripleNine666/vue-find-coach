@@ -23,7 +23,7 @@ export default {
           areas: ["frontend", "career"],
           description:
             "I am Pavel and as a senior developer in a greate tech company, I can help you get your first job or progress in your current role.",
-          hourlyRate: 30,
+          hourlyRate: 20,
         },
       ],
     };
