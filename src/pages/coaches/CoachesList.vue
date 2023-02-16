@@ -33,27 +33,24 @@ export default {
   data() {
     return {
       chosenCoaches: {
-        frontend: true,
-        backend: true,
-        career: true,
+        frontend: false,
+        backend: false,
+        career: false,
       },
     };
   },
   computed: {
     ...mapGetters("coaches", ["coaches", "hasCoaches"]),
     filterdCoaches() {
-      return this.coaches.filter((coach) => {
-        if (this.chosenCoaches.frontend && coach.areas.includes("frontend")) {
-          return true;
+      let returnedCoaches = this.coaches;
+      for (const [area, value] of Object.entries(this.chosenCoaches)) {
+        if (value) {
+          returnedCoaches = returnedCoaches.filter((coach) =>
+            coach.areas.includes(area)
+          );
         }
-        if (this.chosenCoaches.backend && coach.areas.includes("backend")) {
-          return true;
-        }
-        if (this.chosenCoaches.career && coach.areas.includes("career")) {
-          return true;
-        }
-        return false;
-      });
+      }
+      return returnedCoaches;
     },
   },
   methods: {
