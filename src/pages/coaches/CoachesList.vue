@@ -1,5 +1,7 @@
 <template>
-  <section>Filter</section>
+  <section>
+    <coach-filter @update-filter="updateFilter"></coach-filter>
+  </section>
   <section>
     <base-card>
       <div class="controls">
@@ -8,7 +10,7 @@
       </div>
       <ul v-if="hasCoaches">
         <coach-item
-          v-for="coach in coaches"
+          v-for="coach in filterdCoaches"
           :key="coach.id"
           :id="coach.id"
           :first-name="coach.firstName"
@@ -24,11 +26,40 @@
 
 <script>
 import CoachItem from "@/components/coaches/CoachItem.vue";
+import CoachFilter from "../../components/coaches/CoachFilter.vue";
 import { mapGetters } from "vuex";
 export default {
-  components: { CoachItem },
+  components: { CoachItem, CoachFilter },
+  data() {
+    return {
+      chosenCoaches: {
+        frontend: true,
+        backend: true,
+        career: true,
+      },
+    };
+  },
   computed: {
     ...mapGetters("coaches", ["coaches", "hasCoaches"]),
+    filterdCoaches() {
+      return this.coaches.filter((coach) => {
+        if (this.chosenCoaches.frontend && coach.areas.includes("frontend")) {
+          return true;
+        }
+        if (this.chosenCoaches.backend && coach.areas.includes("backend")) {
+          return true;
+        }
+        if (this.chosenCoaches.career && coach.areas.includes("career")) {
+          return true;
+        }
+        return false;
+      });
+    },
+  },
+  methods: {
+    updateFilter(updatedFilter) {
+      this.chosenCoaches = updatedFilter;
+    },
   },
 };
 </script>
