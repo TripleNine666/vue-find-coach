@@ -47,8 +47,13 @@ export default {
     submitForm() {
       this.formIsValid = true;
       this.formValidator();
-      if (this.formIsValid === true) {
-        console.log("Send message: " + this.message.value);
+      if (this.formIsValid) {
+        this.$store.dispatch("requests/contactCoach", {
+          coachId: this.$route.params.id,
+          email: this.email.value,
+          message: this.message.value,
+        });
+        this.$router.replace("/coaches");
       }
     },
     clearValidaty(input) {
