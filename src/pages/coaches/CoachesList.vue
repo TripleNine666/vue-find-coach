@@ -5,12 +5,17 @@
   <section>
     <base-card>
       <div class="controls">
-        <base-button mode="outline" @click="loadCoaches">Refresh</base-button>
-        <base-button v-if="!isCoach" link to="/register"
+        <base-button mode="outline" @click="displayCoaches"
+          >Refresh</base-button
+        >
+        <base-button v-if="!isCoach && !isLoading" link to="/register"
           >Register as a coach</base-button
         >
       </div>
-      <ul v-if="hasCoaches">
+      <div v-if="isLoading">
+        <base-spinner></base-spinner>
+      </div>
+      <ul v-else-if="hasLoadedCoaches">
         <coach-item
           v-for="coach in filterdCoaches"
           :key="coach.id"
@@ -34,6 +39,7 @@ export default {
   components: { CoachItem, CoachFilter },
   data() {
     return {
+      isLoading: false,
       chosenCoaches: {
         frontend: false,
         backend: false,
@@ -43,6 +49,9 @@ export default {
   },
   computed: {
     ...mapGetters("coaches", ["coaches", "hasCoaches", "isCoach"]),
+    hasLoadedCoaches() {
+      return this.hasCoaches && !this.isLoading;
+    },
     filterdCoaches() {
       let returnedCoaches = this.coaches;
       for (const [area, value] of Object.entries(this.chosenCoaches)) {
@@ -60,9 +69,14 @@ export default {
     updateFilter(updatedFilter) {
       this.chosenCoaches = updatedFilter;
     },
+    async displayCoaches() {
+      this.isLoading = true;
+      await this.loadCoaches();
+      this.isLoading = false;
+    },
   },
   created() {
-    this.loadCoaches();
+    this.displayCoaches();
   },
 };
 </script>
