@@ -1,4 +1,7 @@
 <template>
+  <base-dialog :show="!!error" title="An error occured!" @close="handleError">
+    <p>{{ error }}</p>
+  </base-dialog>
   <section>
     <coach-filter @update-filter="updateFilter"></coach-filter>
   </section>
@@ -39,6 +42,7 @@ export default {
   components: { CoachItem, CoachFilter },
   data() {
     return {
+      error: null,
       isLoading: false,
       chosenCoaches: {
         frontend: false,
@@ -71,8 +75,15 @@ export default {
     },
     async displayCoaches() {
       this.isLoading = true;
-      await this.loadCoaches();
+      try {
+        await this.loadCoaches();
+      } catch (error) {
+        this.error = error.message || "Something went wrong!";
+      }
       this.isLoading = false;
+    },
+    handleError() {
+      this.error = null;
     },
   },
   created() {
