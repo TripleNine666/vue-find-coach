@@ -2,7 +2,7 @@
   <teleport to="body">
     <div v-if="show" @click="tryClose" class="backdrop"></div>
     <dialog open v-if="show">
-      <header>
+      <header :class="{ error }">
         <slot name="header">
           <h2>{{ title }}</h2>
         </slot>
@@ -31,6 +31,11 @@ export default {
       required: false,
     },
     fixed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    error: {
       type: Boolean,
       required: false,
       default: false,
@@ -76,6 +81,12 @@ dialog {
 
 header {
   background-color: #05064d;
+  color: white;
+  width: 100%;
+  padding: 1rem;
+}
+header.error {
+  background-color: #4d0505;
   color: white;
   width: 100%;
   padding: 1rem;

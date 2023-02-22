@@ -1,10 +1,16 @@
 <template>
+  <base-dialog :show="!!error" title="An error occured!" @close="handleError">
+    <p>{{ error }}</p>
+  </base-dialog>
   <section>
     <base-card>
       <header>
         <h2>Requests Received</h2>
       </header>
-      <ul v-if="hasRequests">
+      <div v-if="isLoading">
+        <base-spinner></base-spinner>
+      </div>
+      <ul v-else-if="hasRequests && !isLoading">
         <request-item
           v-for="request in requests"
           :key="request.id"
@@ -19,11 +25,35 @@
 
 <script>
 import RequestItem from "@/components/requests/RequestItem.vue";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   components: { RequestItem },
+  data() {
+    return {
+      error: null,
+      isLoading: false,
+    };
+  },
   computed: {
     ...mapGetters("requests", ["hasRequests", "requests"]),
+  },
+  methods: {
+    ...mapActions("requests", ["fetchRequest"]),
+    async displayRequests() {
+      this.isLoading = true;
+      try {
+        await this.fetchRequest();
+      } catch (error) {
+        this.error = error.message || "Something failed!";
+      }
+      this.isLoading = false;
+    },
+    handleError() {
+      this.error = null;
+    },
+  },
+  created() {
+    this.displayRequests();
   },
 };
 </script>

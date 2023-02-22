@@ -1,4 +1,15 @@
 <template>
+  <base-dialog :show="showDialog" title="Success!" @close="closeDialog">
+    <p>Message sended successfully!</p>
+  </base-dialog>
+  <base-dialog
+    :show="!!error"
+    title="Sending the message failed"
+    @close="handleError"
+    :error="true"
+  >
+    <p>{{ error }}</p>
+  </base-dialog>
   <form @submit.prevent="submitForm">
     <div class="form-control" :class="{ invalid: !email.isValid }">
       <label for="email">Your Email</label>
@@ -29,9 +40,13 @@
 </template>
 
 <script>
+import BaseDialog from "@/components/ui/BaseDialog.vue";
 export default {
+  components: { BaseDialog },
   data() {
     return {
+      showDialog: false,
+      error: null,
       email: {
         value: "",
         isValid: true,
@@ -47,14 +62,29 @@ export default {
     submitForm() {
       this.formIsValid = true;
       this.formValidator();
+      this.sendMessage();
+    },
+    async sendMessage() {
       if (this.formIsValid) {
-        this.$store.dispatch("requests/contactCoach", {
-          coachId: this.$route.params.id,
-          email: this.email.value,
-          message: this.message.value,
-        });
-        this.$router.replace("/coaches");
+        try {
+          await this.$store.dispatch("requests/contactCoach", {
+            coachId: this.$route.params.id,
+            email: this.email.value,
+            message: this.message.value,
+          });
+          this.showDialog = true;
+        } catch (error) {
+          this.error = error.message || "Something went wrong!";
+        }
       }
+    },
+    closeDialog() {
+      this.showDialog = false;
+      this.$router.replace("/coaches");
+    },
+    handleError() {
+      this.error = null;
+      this.$router.replace("/coaches");
     },
     clearValidaty(input) {
       this[input].isValid = true;
