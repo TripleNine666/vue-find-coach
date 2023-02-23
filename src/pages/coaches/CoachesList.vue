@@ -8,7 +8,7 @@
   <section>
     <base-card>
       <div class="controls">
-        <base-button mode="outline" @click="displayCoaches"
+        <base-button mode="outline" @click="displayCoaches(true)"
           >Refresh</base-button
         >
         <base-button v-if="!isCoach && !isLoading" link to="/register"
@@ -73,10 +73,10 @@ export default {
     updateFilter(updatedFilter) {
       this.chosenCoaches = updatedFilter;
     },
-    async displayCoaches() {
+    async displayCoaches(refresh = false) {
       this.isLoading = true;
       try {
-        await this.loadCoaches();
+        await this.loadCoaches({ refresh });
       } catch (error) {
         this.error = error.message || "Something went wrong!";
       }

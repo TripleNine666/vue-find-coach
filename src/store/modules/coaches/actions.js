@@ -28,7 +28,11 @@ export default {
       id: userId,
     });
   },
-  async loadCoaches(contxet) {
+  async loadCoaches(contxet, payload) {
+    if (!payload.refresh && !contxet.getters.needUpdate) {
+      return;
+    }
+
     const response = await fetch(
       "https://vue-coach-finder-project-default-rtdb.europe-west1.firebasedatabase.app/coaches/.json"
     );
@@ -52,5 +56,6 @@ export default {
       coaches.push(coach);
     }
     contxet.commit("setCoaches", coaches);
+    contxet.commit("setLastFetch");
   },
 };
