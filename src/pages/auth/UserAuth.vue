@@ -1,21 +1,34 @@
 <template>
-  <base-card>
-    <form @submit.prevent="submitForm">
-      <div class="form-control">
-        <label for="email">Email</label>
-        <input type="email" id="email" v-model.trim="email" />
-      </div>
-      <div class="form-control">
-        <label for="password">Password</label>
-        <input type="password" id="password" v-model="password" />
-      </div>
-      <p v-if="!formIsValid">Please enter a valid email and password!</p>
-      <base-button>{{ buttonCapture }} </base-button>
-      <base-button type="button" mode="flat" @click="switchMode">{{
-        buttonModeCapture
-      }}</base-button>
-    </form>
-  </base-card>
+  <div>
+    <base-dialog
+      :show="!!error"
+      title="Authendicate Error!"
+      @close="handleError"
+      :error="true"
+    >
+      <p>{{ error }}</p>
+    </base-dialog>
+    <base-dialog fixed :show="isLoading" title="Authendicating...">
+      <base-spinner></base-spinner>
+    </base-dialog>
+    <base-card>
+      <form @submit.prevent="submitForm">
+        <div class="form-control">
+          <label for="email">Email</label>
+          <input type="email" id="email" v-model.trim="email" />
+        </div>
+        <div class="form-control">
+          <label for="password">Password</label>
+          <input type="password" id="password" v-model="password" />
+        </div>
+        <p v-if="!formIsValid">Please enter a valid email and password!</p>
+        <base-button>{{ buttonCapture }} </base-button>
+        <base-button type="button" mode="flat" @click="switchMode">{{
+          buttonModeCapture
+        }}</base-button>
+      </form>
+    </base-card>
+  </div>
 </template>
 
 <script>
@@ -26,6 +39,8 @@ export default {
       password: "",
       formIsValid: true,
       mode: "login",
+      isLoading: false,
+      error: null,
     };
   },
   computed: {
@@ -45,7 +60,7 @@ export default {
     },
   },
   methods: {
-    submitForm() {
+    async submitForm() {
       this.formIsValid = true;
       if (
         this.emaill === "" ||
@@ -55,14 +70,23 @@ export default {
         this.formIsValid = false;
         return;
       }
-      if (this.mode === "login") {
-        // this.$store.dispatch("login");
-      } else {
-        this.$store.dispatch("signup", {
-          email: this.email,
-          password: this.password,
-        });
+
+      this.isLoading = true;
+
+      try {
+        if (this.mode === "login") {
+          // await this.$store.dispatch("login");
+        } else {
+          await this.$store.dispatch("signup", {
+            email: this.email,
+            password: this.password,
+          });
+        }
+      } catch (err) {
+        this.error = err.message || "Faied to authendicate!";
       }
+
+      this.isLoading = false;
     },
     switchMode() {
       if (this.mode === "login") {
@@ -70,6 +94,9 @@ export default {
       } else {
         this.mode = "login";
       }
+    },
+    handleError() {
+      this.error = null;
     },
   },
 };

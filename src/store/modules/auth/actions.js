@@ -17,7 +17,10 @@ export default {
 
     if (!response.ok) {
       console.log(responseData);
-      const error = new Error(responseData.message || "Failed to auth");
+      const error = new Error(
+        responseData.message ||
+          "Failed to authendicate. User with this E-mail already exists!"
+      );
       throw error;
     }
 
