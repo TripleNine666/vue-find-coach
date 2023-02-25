@@ -27,8 +27,10 @@ export default {
   },
   async fetchRequest(context) {
     const userId = context.rootGetters.userId;
+    const token = context.rootGetters.token;
     const response = await fetch(
-      `https://vue-coach-finder-project-default-rtdb.europe-west1.firebasedatabase.app/requests/${userId}.json`
+      `https://vue-coach-finder-project-default-rtdb.europe-west1.firebasedatabase.app/requests/${userId}.json?auth=` +
+        token
     );
 
     const responseData = await response.json();
