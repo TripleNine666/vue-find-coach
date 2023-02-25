@@ -1,26 +1,31 @@
 export default {
-  login() {},
-  async signup(context, payload) {
-    const response = await fetch(
-      "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBo8LF-EphCpFQ0uXG09mXgLdU7UzVP47k",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          email: payload.email,
-          password: payload.password,
-          returnSecureToken: true,
-        }),
-      }
-    );
+  async signIn(context, payload) {
+    let url;
+    let errorMessage;
+    if (payload.mode === "login") {
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBo8LF-EphCpFQ0uXG09mXgLdU7UzVP47k";
+      errorMessage =
+        "Failed to authendicate. Please check you E-mail or password!";
+    } else {
+      url =
+        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBo8LF-EphCpFQ0uXG09mXgLdU7UzVP47k";
+      errorMessage =
+        "Failed to authendicate. User with this E-mail already exists!";
+    }
+    const response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        email: payload.email,
+        password: payload.password,
+        returnSecureToken: true,
+      }),
+    });
 
     const responseData = await response.json();
-
     if (!response.ok) {
       console.log(responseData);
-      const error = new Error(
-        responseData.message ||
-          "Failed to authendicate. User with this E-mail already exists!"
-      );
+      const error = new Error(responseData.message || errorMessage);
       throw error;
     }
 

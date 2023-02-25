@@ -74,14 +74,11 @@ export default {
       this.isLoading = true;
 
       try {
-        if (this.mode === "login") {
-          // await this.$store.dispatch("login");
-        } else {
-          await this.$store.dispatch("signup", {
-            email: this.email,
-            password: this.password,
-          });
-        }
+        await this.$store.dispatch("signIn", {
+          email: this.email,
+          password: this.password,
+          mode: this.mode,
+        });
       } catch (err) {
         this.error = err.message || "Faied to authendicate!";
       }
