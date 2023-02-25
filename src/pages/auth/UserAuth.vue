@@ -9,7 +9,7 @@
         <label for="password">Password</label>
         <input type="password" id="password" v-model="password" />
       </div>
-      <p v-if="!formIsValid"></p>
+      <p v-if="!formIsValid">Please enter a valid email and password!</p>
       <base-button>{{ buttonCapture }} </base-button>
       <base-button type="button" mode="flat" @click="switchMode">{{
         buttonModeCapture
@@ -54,6 +54,14 @@ export default {
       ) {
         this.formIsValid = false;
         return;
+      }
+      if (this.mode === "login") {
+        // this.$store.dispatch("login");
+      } else {
+        this.$store.dispatch("signup", {
+          email: this.email,
+          password: this.password,
+        });
       }
     },
     switchMode() {

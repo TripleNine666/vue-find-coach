@@ -5,7 +5,9 @@ import getters from "./getters.js";
 export default {
   store() {
     return {
-      userId: "c3",
+      userId: null,
+      token: null,
+      tokenExpiration: null,
     };
   },
   mutations,
