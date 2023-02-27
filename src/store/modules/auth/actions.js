@@ -24,12 +24,13 @@ export default {
 
     const responseData = await response.json();
     if (!response.ok) {
-      console.log(responseData);
       const error = new Error(responseData.message || errorMessage);
       throw error;
     }
 
-    console.log(responseData);
+    localStorage.setItem("token", responseData.idToken);
+    localStorage.setItem("userId", responseData.localId);
+
     context.commit("setUser", {
       token: responseData.idToken,
       userId: responseData.localId,
@@ -42,5 +43,16 @@ export default {
       userId: null,
       tokenExpiration: null,
     });
+  },
+  tryLogin(context) {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+    if (token && userId) {
+      context.commit("setUser", {
+        token: token,
+        userId: userId,
+        tokenExpiration: null,
+      });
+    }
   },
 };
