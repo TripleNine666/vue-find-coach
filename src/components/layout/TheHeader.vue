@@ -8,16 +8,22 @@
           <router-link v-if="isAuth" to="/requests">Requests</router-link>
           <router-link v-else to="/auth">Login</router-link>
         </li>
+        <li v-if="isAuth">
+          <base-button @click="logout">Logout</base-button>
+        </li>
       </ul>
     </nav>
   </header>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   computed: {
     ...mapGetters(["isAuth"]),
+  },
+  methods: {
+    ...mapActions(["logout"]),
   },
 };
 </script>
@@ -25,7 +31,7 @@ export default {
 header {
   width: 100%;
   height: 5rem;
-  background-color: #05064d;
+  background-color: #000000;
   display: flex;
   justify-content: center;
   align-items: center;
