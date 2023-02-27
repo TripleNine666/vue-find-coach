@@ -12,7 +12,13 @@
           <base-button mode="outline" @click="displayCoaches(true)"
             >Refresh</base-button
           >
-          <base-button v-if="!isCoach && !isLoading" link to="/register"
+          <base-button v-if="!isLoading && !isAuth" link to="/auth"
+            >Login</base-button
+          >
+          <base-button
+            v-if="!isCoach && !isLoading && isAuth"
+            link
+            to="/register"
             >Register as a coach</base-button
           >
         </div>
@@ -55,6 +61,7 @@ export default {
   },
   computed: {
     ...mapGetters("coaches", ["coaches", "hasCoaches", "isCoach"]),
+    ...mapGetters(["isAuth", "userId"]),
     hasLoadedCoaches() {
       return this.hasCoaches && !this.isLoading;
     },
@@ -83,6 +90,8 @@ export default {
         this.error = error.message || "Something went wrong!";
       }
       this.isLoading = false;
+      console.log(this.userId);
+      console.log(this.isAuth);
     },
     handleError() {
       this.error = null;
