@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import store from "./store/index.js";
 
 import NotFound from "./pages/NotFound.vue";
 
@@ -24,11 +25,25 @@ const router = createRouter({
         { path: "contact", component: ContactCoach }, // coaches/c1/contact
       ],
     },
-    { path: "/register", component: CoachReg },
-    { path: "/requests", component: RequestsReseived },
-    { path: "/auth", component: UserAuth },
+    { path: "/register", component: CoachReg, meta: { needAuth: true } },
+    {
+      path: "/requests",
+      component: RequestsReseived,
+      meta: { needAuth: true },
+    },
+    { path: "/auth", component: UserAuth, meta: { needUnauth: true } },
     { path: "/:notFound(.*)", component: NotFound },
   ],
+});
+
+router.beforeEach(function (to, _, next) {
+  if (to.meta.needAuth && !store.getters.isAuth) {
+    next("/auth");
+  } else if (to.meta.needUnauth && store.getters.isAuth) {
+    next("/coaches");
+  } else {
+    next();
+  }
 });
 
 export default router;

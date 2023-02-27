@@ -79,6 +79,8 @@ export default {
           password: this.password,
           mode: this.mode,
         });
+        const redirectUrl = "/" + (this.$route.query.redirect || "coaches");
+        this.$router.replace(redirectUrl);
       } catch (err) {
         this.error = err.message || "Faied to authendicate!";
       }
