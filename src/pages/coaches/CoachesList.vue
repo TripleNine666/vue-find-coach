@@ -93,8 +93,6 @@ export default {
         this.error = error.message || "Something went wrong!";
       }
       this.isLoading = false;
-      console.log(this.userId);
-      console.log(this.isAuth);
     },
     handleError() {
       this.error = null;
